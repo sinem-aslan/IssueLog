@@ -9,6 +9,9 @@ export default {
         'bg-lime-50',
         'bg-red-50',
         'bg-green-50',
+        'bg-green-500',
+        'bg-blue-500',
+        'bg-orange-500',
     ],
     content: [
         './vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php',
