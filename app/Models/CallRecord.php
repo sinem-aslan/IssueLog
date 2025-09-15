@@ -19,6 +19,7 @@ class CallRecord extends Model
         'student_tc',
         'student_phone',
         'reason',
+        'description',
         'department_id',
         'status',
         'solution_date',

@@ -42,6 +42,13 @@
         </main>
     </div>
     @livewireScripts
+    <script>
+        window.addEventListener('show-delete-confirmation', event => {
+            if (confirm('Kullanıcıyı silmek istediğinizden emin misiniz?')) {
+                Livewire.emit('deleteUser', event.detail.id);
+            }
+        });
+    </script>
 </body>
 
 </html>

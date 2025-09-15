@@ -2,8 +2,16 @@
 
     <!-- Yeni Kayıt Butonu -->
     <div class="flex justify-end mb-4">
-        <button type="button" wire:click="$set('showAddModal', true)"
-            class="bg-blue-600 text-white rounded px-4 py-2 hover:bg-blue-700 transition">Yeni Kayıt</button>
+        <div class="flex justify-between items-center w-full mb-4">
+            <div class="flex flex-col items-start">
+                <span class="text-sm font-semibold text-gray-700">Toplam Kullanıcı: <span
+                        class="text-blue-600">{{ $totalCount }}</span></span>
+                <span class="text-xs mt-1"><span class="text-green-600 font-semibold">Aktif:</span> {{ $activeCount }}
+                    &nbsp; <span class="text-red-600 font-semibold">Pasif:</span> {{ $passiveCount }}</span>
+            </div>
+            <button type="button" wire:click="$set('showAddModal', true)"
+                class="bg-blue-600 text-white rounded px-4 py-2 hover:bg-blue-700 transition">Yeni Kayıt</button>
+        </div>
     </div>
 
     <!-- Yeni Kullanıcı Ekle Modalı -->
@@ -112,7 +120,8 @@
     <div class="overflow-hidden rounded-lg border border-gray-200 shadow-md">
         <div class="relative max-h-[70vh] overflow-y-auto"> <!-- Maksimum yükseklik ve dikey kaydırma -->
             <table class="w-full border-collapse bg-white text-left text-sm text-gray-500">
-                <thead class="bg-gray-50 sticky top-0"> <!-- Başlıkların kaydırma sırasında sabit kalması için -->
+                <thead class="bg-gray-50 sticky top-0" style="z-index: 20;">
+                    <!-- Başlıkların kaydırma sırasında sabit kalması için -->
                     <tr>
                         <th scope="col" class="px-4 py-3 font-medium text-gray-900 w-16">No</th>
                         <th scope="col" class="px-6 py-3 font-medium text-gray-900 w-40">İsim</th>
@@ -168,10 +177,10 @@
                             <td class="px-4 py-3 w-24">{{ $user->is_active == 1 ? 'Aktif' : 'Pasif' }}</td>
                             <!-- İşlemler -->
                             <td class="px-2 py-3 w-16">
-                                <div class="flex justify-start items-center gap-4 h-full">
-                                    <button type="button" class="flex items-center justify-center w-8 h-8"
-                                        style="background:rgb(230, 230, 235)"
-                                        wire:click="editUser({{ $user->id }})"
+                                <div class="flex justify-start items-center gap-4 h-full" style="position:relative;">
+                                    <button type="button"
+                                        class="bg-blue-600 text-white rounded flex items-center justify-center w-6 h-6 hover:bg-blue-700 transition"
+                                        wire:click="openEditModal({{ $user->id }})"
                                         onmouseover="this.nextElementSibling.style.display='block'"
                                         onmouseout="this.nextElementSibling.style.display='none'">
                                         <i class="fas fa-edit"></i>
@@ -180,9 +189,28 @@
                                         style="display:none; position:absolute; left:50%; transform:translateX(-50%); bottom:110%; background:#1f2937; color:white; padding:4px 10px; border-radius:6px; font-size:12px; white-space:nowrap; z-index:50; box-shadow:0 2px 8px rgba(0,0,0,0.15);">
                                         Düzenle
                                     </span>
-                                    <button type="button" class="flex items-center justify-center w-7 h-7">
+                                    <button type="button" wire:click="toggleActive({{ $user->id }})"
+                                        class="flex items-center justify-center w-7 h-7 rounded transition duration-150"
+                                        style="background-color: {{ $user->is_active == 1 ? '#22c55e' : '#ef4444' }}; color: white;"
+                                        onmouseover="this.nextElementSibling.style.display='block'"
+                                        onmouseout="this.nextElementSibling.style.display='none'">
                                         <i class="fas fa-power-off"></i>
                                     </button>
+                                    <span
+                                        style="display:none; position:absolute; left:50%; transform:translateX(-50%); bottom:110%; background:#1f2937; color:white; padding:4px 10px; border-radius:6px; font-size:12px; white-space:nowrap; z-index:50; box-shadow:0 2px 8px rgba(0,0,0,0.15);">
+                                        {{ $user->is_active == 1 ? 'Pasif yap' : 'Aktif yap' }}
+                                    </span>
+                                    <button type="button" wire:click="deleteUser({{ $user->id }})"
+                                        class="flex items-center justify-center w-7 h-7 rounded transition duration-150"
+                                        style="background-color: #ef4444; color: white;"
+                                        onmouseover="this.nextElementSibling.style.display='block'"
+                                        onmouseout="this.nextElementSibling.style.display='none'">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                    <span
+                                        style="display:none; position:absolute; left:50%; transform:translateX(-50%); bottom:110%; background:#dc2626; color:white; padding:4px 10px; border-radius:6px; font-size:12px; white-space:nowrap; z-index:50; box-shadow:0 2px 8px rgba(0,0,0,0.15);">
+                                        Sil
+                                    </span>
                                 </div>
                             </td>
                         </tr>

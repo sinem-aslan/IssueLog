@@ -15,6 +15,7 @@ class Department extends Model
     // Mass assignment için izin verilen kolonlar
     protected $fillable = [
         'name',
+        'description',
     ];
 
     // Bir departman birden fazla çağrı kaydına sahip olabilir

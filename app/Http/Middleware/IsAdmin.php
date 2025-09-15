@@ -9,6 +9,7 @@ use Symfony\Component\HttpFoundation\Response;
 
 class IsAdmin
 {
+    // Kullanıcının admin olup olmadığını kontrol eder
     public function handle(Request $request, Closure $next): Response
     {
         if (!Auth::check() || !Auth::user()->is_admin) {
