@@ -233,20 +233,7 @@ class CallRecordsTable extends Component
     public function render()
     {
         $user = Auth::user();
-        $query = CallRecord::select([
-            'id',           // No için
-            'call_date',    // Çağrı Tarihi
-            'student_tc',   // Öğrenci T.C.K.N
-            'student_phone',// Telefon Numarası
-            'reason',       // Arama Gerekçesi
-            'department_id',// İlgili Birim
-            'status',       // Durum
-            'solution_date',  // Çözüm Tarihi
-            'is_urgent',      // Acil durumu için
-            'description',     // Notlar için
-            'user_id'          // Kullanıcı ID'si için
-        ])
-        ->with(['user', 'department']);
+        $query = CallRecord::query();
 
         if ($user->is_admin) {
             // Tüm kayıtlar
@@ -265,11 +252,41 @@ class CallRecordsTable extends Component
         }
 
         $callRecords = $query
+            ->select([
+                'id',
+                'call_date',
+                'student_tc',
+                'student_phone',
+                'reason',
+                'department_id',
+                'status',
+                'solution_date',
+                'is_urgent',
+                'description',
+                'user_id'
+            ])
+            ->with(['user', 'department'])
+            // Çözüldü olan ve çözüm tarihi üzerinden 7 gün geçenler hariç
+            // çözüldü olarak işaretlenen kayıtlar 7 gün sonra tablodan silinir
+            ->where(function ($q) {
+                $q->where('status', '!=', 'resolved')
+                  ->orWhere(function ($sub) {
+                      $sub->where('status', 'resolved')
+                           ->where('solution_date', '>', now()->subDays(7));
+                  });
+            })
             ->orderByRaw('(is_urgent = 1 AND status != "resolved") DESC')
             ->orderByRaw('(status = "resolved") ASC')
             ->orderBy('is_urgent', 'desc')
             ->orderBy('call_date', 'desc')
             ->get();
+
+        // Sayıların hesaplanması
+        $totalCount = $callRecords->count();
+        // Sadece çözümlenmemiş acil kayıtlar
+        $urgentCount = $callRecords->where('is_urgent', 1)->where('status', '!=', 'resolved')->count();
+        $resolvedCount = $callRecords->where('status', 'resolved')->count();
+        $pendingCount = $callRecords->where('status', 'pending')->count();
 
         // Çalışan rolündeki kullanıcılar yeni kayıt alanında 'Çalışan' departmanını göremez
         if (!$user->is_admin) {
@@ -280,7 +297,11 @@ class CallRecordsTable extends Component
 
         return view('livewire.call-records-table', [
             'records' => $callRecords,
-            'departments' => $departments
+            'departments' => $departments,
+            'totalCount' => $totalCount,
+            'urgentCount' => $urgentCount,
+            'resolvedCount' => $resolvedCount,
+            'pendingCount' => $pendingCount,
         ]);
     }
 }

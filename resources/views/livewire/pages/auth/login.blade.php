@@ -24,6 +24,11 @@ new #[Layout('layouts.guest')] class extends Component {
 }; ?>
 
 <div>
+    @if ($errors->has('email'))
+        <div class="alert alert-danger mb-4" style="color: red">
+            {{ $errors->first('email') }}
+        </div>
+    @endif
     <!-- Session Status -->
     <x-auth-session-status class="mb-4" :status="session('status')" />
 

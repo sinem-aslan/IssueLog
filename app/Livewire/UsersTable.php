@@ -10,7 +10,7 @@ class UsersTable extends Component
 {
     use WithPagination;
     protected $listeners = [
-        'deleteUser' => 'deleteUser',
+        // 'deleteUser' => 'deleteUser', // kullanıcı silme işlemi
     ];
 
     public $expandedDescription = [];
@@ -145,20 +145,20 @@ class UsersTable extends Component
     {
         // Aktif kullanıcılar önce gelir, en eski eklenen en üstte olacak şekilde sıralanır
         $activeUsers = User::select([
-            'id', 'name', 'surname', 'email', 'department_id', 'is_active', 'is_admin', 'description', 'created_at'
+            'id', 'name', 'surname', 'email', 'department_id', 'is_active', 'is_admin', 'description', 'created_at', 'updated_at'
         ])
             ->with('department')
             ->where('is_active', 1)
             ->orderBy('created_at', 'asc')
             ->get();
 
-        // Pasif kullanıcılar en son eklenen en üstte olacak şekilde sıralanır
+        // Pasif kullanıcılar: en son pasif yapılan en üstte olacak şekilde sıralanır
         $passiveUsers = User::select([
-            'id', 'name', 'surname', 'email', 'department_id', 'is_active', 'is_admin', 'description', 'created_at'
+            'id', 'name', 'surname', 'email', 'department_id', 'is_active', 'is_admin', 'description', 'created_at', 'updated_at'
         ])
             ->with('department')
             ->where('is_active', 0)
-            ->orderBy('created_at', 'desc')
+            ->orderBy('updated_at', 'desc')
             ->get();
 
         $allUsers = $activeUsers->concat($passiveUsers);
@@ -186,9 +186,9 @@ class UsersTable extends Component
     }
 
     // Kullanıcıyı soft delete ile siler
-    public function deleteUser($id)
-    {
-        $user = User::findOrFail($id);
-        $user->delete();
-    }
+    // public function deleteUser($id)
+    // {
+    //     $user = User::findOrFail($id);
+    //     $user->delete();
+    // }
 }

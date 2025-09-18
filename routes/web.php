@@ -8,18 +8,18 @@ Route::redirect('/', '/login')->name('login');
 
 // Dashboard rotası, sadece doğrulanmış kullanıcılar erişebilir
 Route::view('dashboard', 'dashboard')
-    ->middleware(['auth', 'verified'])
+    ->middleware(['auth', 'verified', \App\Http\Middleware\CheckUserIsActive::class])
     ->name('dashboard');
 
 // Kullanıcılar için rota tanımlamaları(sadece admin erişebilir)
 Route::get('/users', function () {
     return view('users.index');
-})->middleware('is_admin')->name('users.index');
+})->middleware(['auth', \App\Http\Middleware\CheckUserIsActive::class, 'is_admin'])->name('users.index');
 
 // Birimler için rota tanımlamaları (sadece admin erişebilir)
 Route::get('/departments', function () {
     return view('departments.index');
-})->middleware('is_admin')->name('departments.index');
+})->middleware(['auth', \App\Http\Middleware\CheckUserIsActive::class, 'is_admin'])->name('departments.index');
 
 
 
