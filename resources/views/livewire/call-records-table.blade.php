@@ -61,12 +61,7 @@
                         <th scope="col" class="px-6 py-3 whitespace-nowrap text-center font-medium text-gray-900"
                             style="width: 5%;">Çözüm Tarihi
                         </th>
-                        @php
-                            $currentUser = Auth::user();
-                            $showActions =
-                                $currentUser->is_admin ||
-                                ($currentUser->department && $currentUser->department->name === 'Çalışan');
-                        @endphp
+
                         <th scope="col" class="px-6 py-3 font-medium text-gray-900" style="width: 8%;">İşlemler
                         </th>
                         <th scope="col" class="px-6 py-3 font-medium text-gray-900" style="width: 27%;">Çağrı Notu
@@ -85,6 +80,12 @@
                                 <div class="font-medium text-gray-700">{{ $record->call_date->format('d/m/Y') }}</div>
                                 <div class="text-xs text-gray-500">{{ $record->call_date->format('H:i') }}</div>
                             </td>
+                            {{-- @php
+                                $currentUser = Auth::user();
+                                $showActions =
+                                    $currentUser->is_admin ||
+                                    ($currentUser->department && $currentUser->department->name === 'Çalışan');
+                            @endphp --}}
                             <!-- Temsilci -->
                             @if ($currentUser->is_admin)
                                 <td class="px-6 py-3">

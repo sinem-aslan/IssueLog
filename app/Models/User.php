@@ -56,8 +56,16 @@ class User extends Authenticatable
             'is_admin' => 'boolean',
         ];
     }
+
+    // Kullanıcının departmanını alma
     public function department()
     {
         return $this->belongsTo(Department::class);
+    }
+
+    // Şifre sıfırlama bildirimini özelleştirme
+    public function sendPasswordResetNotification($token)
+    {
+        $this->notify(new \App\Notifications\ResetPasswordNotification($token));
     }
 }
