@@ -24,12 +24,15 @@ class User extends Authenticatable
         'id',
         'name',
         'surname',
+        'tc',
         'email',
         'password',
         'department_id',
         'is_active',
         'is_admin',
         'description',
+        'activated_at',
+        'deactivated_at',
     ];
 
     /**
@@ -54,6 +57,8 @@ class User extends Authenticatable
             'password' => 'hashed',
             'is_active' => 'boolean',
             'is_admin' => 'boolean',
+            'created_at' => 'datetime',
+            'updated_at' => 'datetime',
         ];
     }
 

@@ -34,11 +34,11 @@ new class extends Component {
                         {{ __('ATA-AÖF Arama Talepleri') }}
                     </x-nav-link>
                     @if (auth()->user()->is_admin)
-                        <x-nav-link :href="route('users.index')" :active="request()->routeIs('users.index')" wire:navigate>
-                            {{ __('Kullanıcılar') }}
-                        </x-nav-link>
                         <x-nav-link :href="route('departments.index')" :active="request()->routeIs('departments.index')" wire:navigate>
                             {{ __('Birimler') }}
+                        </x-nav-link>
+                        <x-nav-link :href="route('users.index')" :active="request()->routeIs('users.index')" wire:navigate>
+                            {{ __('Kullanıcılar') }}
                         </x-nav-link>
                     @endif
 
@@ -101,11 +101,11 @@ new class extends Component {
                 {{ __('Dashboard') }}
             </x-responsive-nav-link>
             @if (auth()->user()->is_admin)
-                <x-responsive-nav-link :href="route('users.index')" :active="request()->routeIs('users.index')" wire:navigate>
-                    {{ __('Kullanıcılar') }}
-                </x-responsive-nav-link>
                 <x-responsive-nav-link :href="route('departments.index')" :active="request()->routeIs('departments.index')" wire:navigate>
                     {{ __('Birimler') }}
+                </x-responsive-nav-link>
+                <x-responsive-nav-link :href="route('users.index')" :active="request()->routeIs('users.index')" wire:navigate>
+                    {{ __('Kullanıcılar') }}
                 </x-responsive-nav-link>
             @endif
         </div>

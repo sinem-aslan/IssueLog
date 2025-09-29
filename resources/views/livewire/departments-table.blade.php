@@ -17,25 +17,40 @@
                 <thead class="sticky top-0" style="background-color: #ccdbe6; z-index: 20;">
                     <!-- Başlıkların kaydırma sırasında sabit kalması için -->
                     <tr>
-                        <th scope="col" class="px-4 py-4 font-medium text-gray-900 w-16">No</th>
-                        <th scope="col" class="px-6 py-4 font-medium text-gray-900 w-32">İsim</th>
-                        <th scope="col" class="px-6 py-4 font-medium text-gray-900 w-16">Kişi Sayısı</th>
-                        <th scope="col" class="px-6 py-4 font-medium text-gray-900 w-24">Aktif/Pasif</th>
-                        <th scope="col" class="px-6 py-4 font-medium text-gray-900 w-72">Açıklama</th>
-                        <th scope="col" class="px-2 py-4 font-medium text-gray-900 w-32">İşlemler</th>
+                        <th scope="col" class="px-4 py-4 font-medium text-gray-900" style="width: 5%;">No</th>
+                        <th scope="col" class="px-6 py-4 font-medium text-gray-900" style="width: 15%;">Eklenme
+                            Tarihi</th>
+                        <th scope="col" class="px-6 py-4 font-medium text-gray-900" style="width: 15%;">İsim</th>
+                        <th scope="col" class="px-6 py-4 font-medium text-gray-900" style="width: 10%;">Kişi Sayısı
+                        </th>
+                        <th scope="col" class="px-6 py-4 font-medium text-gray-900" style="width: 10%;">Aktif/Pasif
+                        </th>
+                        <th scope="col" class="px-6 py-4 font-medium text-gray-900" style="width: 25%;">Açıklama</th>
+                        <th scope="col" class="px-2 py-4 font-medium text-gray-900" style="width: 15%;">İşlemler</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-100 border-t border-gray-100">
                     @forelse ($departments as $department)
                         <tr class="hover:bg-gray-50">
                             <!-- No -->
-                            <td class="px-4 py-4 w-16">{{ $loop->iteration }}</td>
+                            <td class="px-4 py-4">{{ $loop->iteration }}</td>
+                            <!-- Eklenme Tarihi -->
+                            <td class="px-6 py-4">
+                                @if ($department->created_at)
+                                    <div class="font-medium text-gray-700">
+                                        {{ $department->created_at->format('d/m/Y') }}</div>
+                                    <div class="text-xs text-gray-500">{{ $department->created_at->format('H:i') }}
+                                    </div>
+                                @else
+                                    -
+                                @endif
+                            </td>
                             <!-- İsim -->
-                            <td class="px-6 py-4 w-32">{{ $department->name }}</td>
+                            <td class="px-6 py-4">{{ $department->name }}</td>
                             <!-- Kişi Sayısı -->
-                            <td class="px-6 py-4 w-16 text-start">{{ $userCounts[$department->id] ?? 0 }}</td>
+                            <td class="px-6 py-4">{{ $userCounts[$department->id] ?? 0 }}</td>
                             <!-- Aktif/Pasif -->
-                            <td class="px-6 py-4 w-24 text-start">
+                            <td class="px-6 py-4">
                                 <span class="text-green-700 font-semibold"
                                     style="color: green;">{{ $activeCounts[$department->id] ?? 0 }}</span>
                                 /
@@ -43,7 +58,7 @@
                                     style="color: red;">{{ $passiveCounts[$department->id] ?? 0 }}</span>
                             </td>
                             <!-- Açıklama -->
-                            <td class="px-6 py-4 w-72 max-w-xs align-top">
+                            <td class="px-6 py-4">
                                 @php
                                     $text = trim((string) ($department->description ?? ''));
                                     $words = $text === '' ? [] : explode(' ', $text);
@@ -63,7 +78,7 @@
                                 @endif
                             </td>
                             <!-- İşlemler -->
-                            <td class="px-2 py-4 w-32">
+                            <td class="px-2 py-4">
                                 <div class="flex justify-start items-center gap-4 h-full">
                                     <div class="relative group">
                                         <button type="button"
@@ -182,7 +197,18 @@
                                     @error('editDepartment.description')
                                         <span class="text-red-500 text-xs">{{ $message }}</span>
                                     @enderror
+                                    <!-- Son Düzenleyen Bilgisi -->
+                                    @if (!empty($editDepartment['editor_name']) || !empty($editDepartment['updated_at']))
+                                        <div class="text-xs text-gray-500 mt-2 text-left pr-4">
+                                            Son değişiklik:
+                                            {{ $editDepartment['editor_name'] ?? '-' }}
+                                            @if (!empty($editDepartment['updated_at']))
+                                                ({{ \Carbon\Carbon::parse($editDepartment['updated_at'])->format('d/m/Y H:i') }})
+                                            @endif
+                                        </div>
+                                    @endif
                                 </div>
+
                                 <div class="flex justify-end mt-6">
                                     <button type="button" wire:click="$set('showEditModal', false)"
                                         class="inline-flex items-center justify-center bg-gray-100 text-gray-700 border border-gray-300 rounded px-4 py-1 text-sm font-semibold hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-400 transition mr-2">Kapat</button>

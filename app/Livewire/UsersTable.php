@@ -145,7 +145,8 @@ class UsersTable extends Component
     {
         // Aktif kullanıcılar önce gelir, en eski eklenen en üstte olacak şekilde sıralanır
         $activeUsers = User::select([
-            'id', 'name', 'surname', 'email', 'department_id', 'is_active', 'is_admin', 'description', 'created_at', 'updated_at'
+            'id', 'name', 'surname', 'email', 'department_id', 'is_active', 'is_admin', 'description', 'created_at', 'updated_at',
+            'activated_at', 'deactivated_at'
         ])
             ->with('department')
             ->where('is_active', 1)
@@ -154,7 +155,8 @@ class UsersTable extends Component
 
         // Pasif kullanıcılar: en son pasif yapılan en üstte olacak şekilde sıralanır
         $passiveUsers = User::select([
-            'id', 'name', 'surname', 'email', 'department_id', 'is_active', 'is_admin', 'description', 'created_at', 'updated_at'
+            'id', 'name', 'surname', 'email', 'department_id', 'is_active', 'is_admin', 'description', 'created_at', 'updated_at',
+            'activated_at', 'deactivated_at'
         ])
             ->with('department')
             ->where('is_active', 0)
@@ -181,7 +183,16 @@ class UsersTable extends Component
     public function toggleActive($id)
     {
         $user = User::findOrFail($id);
-        $user->is_active = $user->is_active == 1 ? 0 : 1;
+        if ($user->is_active) {
+            // Pasif yap
+            $user->is_active = 0;
+            $user->deactivated_at = now();
+        } else {
+            // Aktif yap
+            $user->is_active = 1;
+            $user->activated_at = now();
+            $user->deactivated_at = null; // Aktif olunca pasif tarihi sıfırlanır
+        }
         $user->save();
     }
 

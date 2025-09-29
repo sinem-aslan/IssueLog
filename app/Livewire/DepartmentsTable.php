@@ -56,10 +56,17 @@ class DepartmentsTable extends Component
     public function openEditModal($id)
     {
         $department = Department::findOrFail($id);
+        $editorName = null;
+        if ($department->updated_by) {
+            $user = \App\Models\User::find($department->updated_by);
+            $editorName = $user ? $user->name . ' ' . $user->surname : null;
+        }
         $this->editDepartment = [
             'id' => $department->id,
             'name' => $department->name,
             'description' => $department->description,
+            'updated_at' => $department->updated_at,
+            'editor_name' => $editorName,
         ];
         $this->showEditModal = true;
     }
@@ -77,6 +84,7 @@ class DepartmentsTable extends Component
         $data = $this->editDepartment;
         $data['name'] = mb_convert_case($data['name'], MB_CASE_TITLE, "UTF-8");
         unset($data['id']);
+        $data['updated_by'] = auth()->id();
         $department->update($data);
         $this->showEditModal = false;
     }
@@ -94,6 +102,9 @@ class DepartmentsTable extends Component
             'id',
             'name',
             'description',
+            'created_at',
+            'updated_at',
+            'updated_by',
         ])->orderBy('name')->get();
 
         $departmentCount = Department::count();

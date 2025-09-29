@@ -21,23 +21,36 @@
                 <thead class="sticky top-0" style="background-color: #ccdbe6; z-index: 20;">
                     <!-- Başlıkların kaydırma sırasında sabit kalması için -->
                     <tr>
-                        <th scope="col" class="px-4 py-4 font-medium text-gray-900 w-16">No </th>
-                        <th scope="col" class="px-6 py-4 font-medium text-gray-900 w-40">İsim</th>
-                        <th scope="col" class="px-6 py-4 font-medium text-gray-900 w-40">Soyisim</th>
-                        <th scope="col" class="px-6 py-4 font-medium text-gray-900 w-48">E-posta</th>
-                        <th scope="col" class="px-6 py-4 font-medium text-gray-900 w-40">Birim</th>
-                        <th scope="col" class="px-6 py-4 font-medium text-gray-900 w-56">Açıklama</th>
-                        <th scope="col" class="px-4 py-4 font-medium text-gray-900 w-24">Durum</th>
-                        <th scope="col" class="px-2 py-4 font-medium text-gray-900 w-16">İşlemler</th>
+                        <th scope="col" class="px-4 py-4 font-medium text-gray-900" style="width: 5%;">No </th>
+                        <th scope="col" class="px-6 py-4 font-medium text-gray-900" style="width: 10%;">Eklenme
+                            Tarihi</th>
+                        <th scope="col" class="px-6 py-4 font-medium text-gray-900" style="width: 10%;">İsim</th>
+                        <th scope="col" class="px-6 py-4 font-medium text-gray-900" style="width: 10%;">Soyisim</th>
+                        <th scope="col" class="px-6 py-4 font-medium text-gray-900" style="width: 10%;">E-posta</th>
+                        <th scope="col" class="px-6 py-4 font-medium text-gray-900" style="width: 15%;">Birim</th>
+                        <th scope="col" class="px-6 py-4 font-medium text-gray-900" style="width: 15%;">Açıklama</th>
+                        <th scope="col" class="px-4 py-4 font-medium text-gray-900" style="width: 13%;">Durum</th>
+                        <th scope="col" class="px-2 py-4 font-medium text-gray-900" style="width: 12%;">İşlemler</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-100 border-t border-gray-100">
                     @forelse ($users as $user)
                         <tr class="hover:bg-gray-50">
                             <!-- No -->
-                            <td class="px-4 py-4 w-16">{{ $loop->iteration }}</td>
+                            <td class="px-4 py-4">{{ $loop->iteration }}</td>
+                            <!-- Eklenme Tarihi -->
+                            <td class="px-6 py-4">
+                                @if ($user->created_at)
+                                    <div class="font-medium text-gray-700">
+                                        {{ $user->created_at->format('d/m/Y') }}</div>
+                                    <div class="text-xs text-gray-500">{{ $user->created_at->format('H:i') }}
+                                    </div>
+                                @else
+                                    -
+                                @endif
+                            </td>
                             <!-- İsim -->
-                            <td class="px-6 py-4 w-40">
+                            <td class="px-6 py-4">
                                 <div class="font-medium text-gray-700">{{ $user->name }}</div>
                                 @if ($user->is_admin)
                                     <span class="block text-xs text-gray-500 mt-1 font-normal">Yönetici</span>
@@ -46,13 +59,13 @@
                                 @endif
                             </td>
                             <!-- Soyisim -->
-                            <td class="px-6 py-4 w-40">{{ $user->surname }}</td>
+                            <td class="px-6 py-4">{{ $user->surname }}</td>
                             <!-- E-posta -->
-                            <td class="px-6 py-4 w-48">{{ $user->email }}</td>
+                            <td class="px-6 py-4">{{ $user->email }}</td>
                             <!-- Birim -->
-                            <td class="px-6 py-4 w-40">{{ $user->department?->name ?? 'Bilinmiyor' }}</td>
+                            <td class="px-6 py-4">{{ $user->department?->name ?? 'Bilinmiyor' }}</td>
                             <!-- Açıklama -->
-                            <td class="px-6 py-4 w-56 max-w-xs align-top">
+                            <td class="px-6 py-4">
                                 @php
                                     $text = trim((string) ($user->description ?? ''));
                                     $words = $text === '' ? [] : explode(' ', $text);
@@ -72,9 +85,25 @@
                                 @endif
                             </td>
                             <!-- Durum -->
-                            <td class="px-4 py-4 w-24">{{ $user->is_active == 1 ? 'Aktif' : 'Pasif' }}</td>
+                            <td class="px-4 py-4">
+                                @if ($user->is_active == 1)
+                                    <span class="text-green-600 font-semibold">Aktif</span>
+                                    @if ($user->activated_at)
+                                        <br>
+                                        <span
+                                            class="text-xs text-gray-500">({{ \Carbon\Carbon::parse($user->activated_at)->format('d.m.Y H:i') }})</span>
+                                    @endif
+                                @else
+                                    <span class="text-red-600 font-semibold">Pasif</span>
+                                    @if ($user->deactivated_at)
+                                        <br>
+                                        <span
+                                            class="text-xs text-gray-500">({{ \Carbon\Carbon::parse($user->deactivated_at)->format('d.m.Y H:i') }})</span>
+                                    @endif
+                                @endif
+                            </td>
                             <!-- İşlemler -->
-                            <td class="px-2 py-4 w-16">
+                            <td class="px-2 py-4">
                                 <div class="flex justify-start items-center gap-4 h-full" style="position:relative;">
                                     <div class="relative group">
                                         <button type="button"

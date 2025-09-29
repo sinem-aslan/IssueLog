@@ -8,7 +8,8 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Department extends Model
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory;
+    use SoftDeletes;
 
     // Tablo adı
     protected $table = 'departments';
@@ -17,11 +18,25 @@ class Department extends Model
     protected $fillable = [
         'name',
         'description',
+        'updated_by',
     ];
+
+    // Tarih kolonlarını otomatik olarak Carbon instance'larına dönüştür
+    protected $casts = [
+    'created_at' => 'datetime',
+    'updated_at' => 'datetime',
+    ];
+
 
     // Bir departman birden fazla çağrı kaydına sahip olabilir
     public function callRecords()
     {
         return $this->hasMany(CallRecord::class);
+    }
+
+    // Departmanı oluşturan kullanıcı
+    public function editor()
+    {
+        return $this->belongsTo(User::class, 'updated_by');
     }
 }
