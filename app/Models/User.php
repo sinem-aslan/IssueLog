@@ -71,6 +71,6 @@ class User extends Authenticatable
     // Şifre sıfırlama bildirimini özelleştirme
     public function sendPasswordResetNotification($token)
     {
-        $this->notify(new \App\Notifications\ResetPasswordNotification($token));
+        $this->notify(new \Illuminate\Auth\Notifications\ResetPassword($token));
     }
 }

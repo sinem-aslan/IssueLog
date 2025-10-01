@@ -94,7 +94,8 @@
 
                                     <!-- Sil butonu -->
                                     <div class="relative group">
-                                        <button type="button" wire:click="deleteDepartment({{ $department->id }})"
+                                        <button type="button"
+                                            onclick="if(confirm('Silmek istediğinizden emin misiniz?')) { @this.deleteDepartment({{ $department->id }}) }"
                                             class="flex items-center justify-center w-7 h-7 rounded transition duration-150"
                                             style="background-color: #ef4444; color: white;">
                                             <i class="fas fa-trash"></i>

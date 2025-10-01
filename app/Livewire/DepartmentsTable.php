@@ -10,20 +10,12 @@ class DepartmentsTable extends Component
 {
     use WithPagination;
 
+    // Durum ve Kontrol Özellikleri
     public $showAddModal = false;
     public $showEditModal = false;
+    public $expandedDescription = [];
 
-    protected $listeners = [
-      'deleteDepartment' => 'deleteDepartment', // departman silme işlemi
-    ];
-
-    // Departmanı soft delete ile siler
-    public function deleteDepartment($id)
-    {
-        $department = Department::findOrFail($id);
-        $department->delete();
-    }
-
+    // Veri Özellikleri
     public $newDepartment = [
         'name' => '',
         'description' => '',
@@ -35,8 +27,12 @@ class DepartmentsTable extends Component
         'description' => '',
     ];
 
-    public $expandedDescription = [];
+    // Yaşam Döngüsü ve Dinleyiciler
+    protected $listeners = [
+      'deleteDepartment' => 'deleteDepartment', // departman silme işlemi
+    ];
 
+    // --- CRUD Yöntemleri ---
     // Yeni birim ekleme fonksiyonu
     public function addDepartment()
     {
@@ -46,29 +42,13 @@ class DepartmentsTable extends Component
             'newDepartment.name.required' => 'Departman adı zorunludur.',
             'newDepartment.name.regex' => 'Departman adında sayı olamaz.',
         ]);
+
         $data = $this->newDepartment;
         $data['name'] = mb_convert_case($data['name'], MB_CASE_TITLE, "UTF-8");
         Department::create($data);
+
         $this->reset('newDepartment');
         $this->showAddModal = false;
-    }
-    // Edit modalını açar ve seçilen kullanıcının verilerini doldurur
-    public function openEditModal($id)
-    {
-        $department = Department::findOrFail($id);
-        $editorName = null;
-        if ($department->updated_by) {
-            $user = \App\Models\User::find($department->updated_by);
-            $editorName = $user ? $user->name . ' ' . $user->surname : null;
-        }
-        $this->editDepartment = [
-            'id' => $department->id,
-            'name' => $department->name,
-            'description' => $department->description,
-            'updated_at' => $department->updated_at,
-            'editor_name' => $editorName,
-        ];
-        $this->showEditModal = true;
     }
 
     // Güncelleme işlemi
@@ -80,13 +60,47 @@ class DepartmentsTable extends Component
             'editDepartment.name.required' => 'Departman adı zorunludur.',
             'editDepartment.name.regex' => 'Departman adında sayı olamaz.',
         ]);
+
         $department = Department::findOrFail($this->editDepartment['id']);
         $data = $this->editDepartment;
         $data['name'] = mb_convert_case($data['name'], MB_CASE_TITLE, "UTF-8");
+
         unset($data['id']);
         $data['updated_by'] = auth()->id();
+
         $department->update($data);
         $this->showEditModal = false;
+    }
+
+    // Departmanı soft delete ile siler
+    public function deleteDepartment($id)
+    {
+        $department = Department::findOrFail($id);
+        $department->delete();
+    }
+
+    // --- Yardımcı Yöntemler ---
+
+    // Edit modalını açar ve seçilen kullanıcının verilerini doldurur
+    public function openEditModal($id)
+    {
+        $department = Department::findOrFail($id);
+        $editorName = null;
+
+        if ($department->updated_by) {
+            $user = \App\Models\User::find($department->updated_by);
+            $editorName = $user ? $user->name . ' ' . $user->surname : null;
+        }
+
+        $this->editDepartment = [
+            'id' => $department->id,
+            'name' => $department->name,
+            'description' => $department->description,
+            'updated_at' => $department->updated_at,
+            'editor_name' => $editorName,
+        ];
+
+        $this->showEditModal = true;
     }
 
     // metni açma/kapatma işlemi
@@ -94,6 +108,8 @@ class DepartmentsTable extends Component
     {
         $this->expandedDescription[$id] = !($this->expandedDescription[$id] ?? false);
     }
+
+    // --- Render Yöntemi ---
 
     // Render fonksiyonu
     public function render()
@@ -114,6 +130,7 @@ class DepartmentsTable extends Component
         $userCounts = [];
         $activeCounts = [];
         $passiveCounts = [];
+
         foreach ($departments as $department) {
             $userCounts[$department->id] = \App\Models\User::where('department_id', $department->id)->count();
             $activeCounts[$department->id] = \App\Models\User::where('department_id', $department->id)->where('is_active', true)->count();

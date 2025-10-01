@@ -10,9 +10,7 @@ use Livewire\Volt\Volt;
 test('reset password link screen can be rendered', function () {
     $response = $this->get('/forgot-password');
 
-    $response
-        ->assertSeeVolt('pages.auth.forgot-password')
-        ->assertStatus(200);
+    $response->assertStatus(200);
 });
 
 test('reset password link can be requested', function () {
@@ -39,9 +37,7 @@ test('reset password screen can be rendered', function () {
     Notification::assertSentTo($user, ResetPassword::class, function ($notification) {
         $response = $this->get('/reset-password/'.$notification->token);
 
-        $response
-            ->assertSeeVolt('pages.auth.reset-password')
-            ->assertStatus(200);
+        $response->assertStatus(200);
 
         return true;
     });

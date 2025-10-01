@@ -22,5 +22,4 @@ Route::get('/departments', function () {
 })->middleware(['auth', \App\Http\Middleware\CheckUserIsActive::class, 'is_admin'])->name('departments.index');
 
 
-
 require __DIR__.'/auth.php';

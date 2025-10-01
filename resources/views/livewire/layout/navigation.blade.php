@@ -22,7 +22,7 @@ new class extends Component {
             <div class="flex">
                 <!-- Logo -->
                 <div class="flex items-center h-16">
-                    <a href="{{ route('dashboard') }}" wire:navigate class="flex items-center justify-center h-full">
+                    <a href="{{ route('dashboard') }}" class="flex items-center justify-center h-full">
                         <img src="https://ataaof.edu.tr//assets/images/atauni_icon-min.png" alt=""
                             style="max-width:50px;max-height:50px;" />
                     </a>
@@ -30,14 +30,14 @@ new class extends Component {
 
                 <!-- Navigation Links -->
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                    <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')" wire:navigate>
+                    <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                         {{ __('ATA-AÖF Arama Talepleri') }}
                     </x-nav-link>
                     @if (auth()->user()->is_admin)
-                        <x-nav-link :href="route('departments.index')" :active="request()->routeIs('departments.index')" wire:navigate>
+                        <x-nav-link :href="route('departments.index')" :active="request()->routeIs('departments.index')">
                             {{ __('Birimler') }}
                         </x-nav-link>
-                        <x-nav-link :href="route('users.index')" :active="request()->routeIs('users.index')" wire:navigate>
+                        <x-nav-link :href="route('users.index')" :active="request()->routeIs('users.index')">
                             {{ __('Kullanıcılar') }}
                         </x-nav-link>
                     @endif
@@ -97,14 +97,14 @@ new class extends Component {
     <!-- Responsive Navigation Menu -->
     <div :class="{ 'block': open, 'hidden': !open }" class="hidden sm:hidden">
         <div class="pt-2 pb-3 space-y-1">
-            <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')" wire:navigate>
+            <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                 {{ __('Dashboard') }}
             </x-responsive-nav-link>
             @if (auth()->user()->is_admin)
-                <x-responsive-nav-link :href="route('departments.index')" :active="request()->routeIs('departments.index')" wire:navigate>
+                <x-responsive-nav-link :href="route('departments.index')" :active="request()->routeIs('departments.index')">
                     {{ __('Birimler') }}
                 </x-responsive-nav-link>
-                <x-responsive-nav-link :href="route('users.index')" :active="request()->routeIs('users.index')" wire:navigate>
+                <x-responsive-nav-link :href="route('users.index')" :active="request()->routeIs('users.index')">
                     {{ __('Kullanıcılar') }}
                 </x-responsive-nav-link>
             @endif

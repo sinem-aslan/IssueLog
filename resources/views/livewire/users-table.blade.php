@@ -22,15 +22,16 @@
                     <!-- Başlıkların kaydırma sırasında sabit kalması için -->
                     <tr>
                         <th scope="col" class="px-4 py-4 font-medium text-gray-900" style="width: 5%;">No </th>
-                        <th scope="col" class="px-6 py-4 font-medium text-gray-900" style="width: 10%;">Eklenme
+                        <th scope="col" class="px-6 py-4 font-medium text-gray-900" style="width: 5%;">Eklenme
                             Tarihi</th>
                         <th scope="col" class="px-6 py-4 font-medium text-gray-900" style="width: 10%;">İsim</th>
                         <th scope="col" class="px-6 py-4 font-medium text-gray-900" style="width: 10%;">Soyisim</th>
+                        <th scope="col" class="px-6 py-4 font-medium text-gray-900" style="width: 10%;">TC</th>
                         <th scope="col" class="px-6 py-4 font-medium text-gray-900" style="width: 10%;">E-posta</th>
                         <th scope="col" class="px-6 py-4 font-medium text-gray-900" style="width: 15%;">Birim</th>
-                        <th scope="col" class="px-6 py-4 font-medium text-gray-900" style="width: 15%;">Açıklama</th>
+                        <th scope="col" class="px-6 py-4 font-medium text-gray-900" style="width: 12%;">Açıklama</th>
                         <th scope="col" class="px-4 py-4 font-medium text-gray-900" style="width: 13%;">Durum</th>
-                        <th scope="col" class="px-2 py-4 font-medium text-gray-900" style="width: 12%;">İşlemler</th>
+                        <th scope="col" class="px-2 py-4 font-medium text-gray-900" style="width: 10%;">İşlemler</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-100 border-t border-gray-100">
@@ -53,13 +54,15 @@
                             <td class="px-6 py-4">
                                 <div class="font-medium text-gray-700">{{ $user->name }}</div>
                                 @if ($user->is_admin)
-                                    <span class="block text-xs text-gray-500 mt-1 font-normal">Yönetici</span>
+                                    <span class="block text-xs text-blue-700 mt-1 font-normal">Yönetici</span>
                                 @else
                                     <span class="block text-xs text-gray-500 mt-1 font-normal">Kullanıcı</span>
                                 @endif
                             </td>
                             <!-- Soyisim -->
                             <td class="px-6 py-4">{{ $user->surname }}</td>
+                            <!-- TC -->
+                            <td class="px-6 py-4">{{ $user->tc ?? '-' }}</td>
                             <!-- E-posta -->
                             <td class="px-6 py-4">{{ $user->email }}</td>
                             <!-- Birim -->
@@ -188,6 +191,16 @@
                                             @enderror
                                         </div>
                                         <div>
+                                            <label class="text-sm font-medium text-gray-700 block mb-1">TC</label>
+                                            <input type="text" wire:model.defer="newUser.tc"
+                                                class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400">
+                                            <p class="text-xs text-gray-500 mt-1">11 haneli sayısal bir değer
+                                                olmalıdır.</p>
+                                            @error('newUser.tc')
+                                                <span class="text-red-500 text-xs">{{ $message }}</span>
+                                            @enderror
+                                        </div>
+                                        <div>
                                             <label class="text-sm font-medium text-gray-700 block mb-1">E-posta</label>
                                             <input type="email" wire:model.defer="newUser.email"
                                                 class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400">
@@ -195,6 +208,8 @@
                                                 <span class="text-red-500 text-xs">{{ $message }}</span>
                                             @enderror
                                         </div>
+                                    </div>
+                                    <div class="flex flex-col gap-6">
                                         <div>
                                             <label class="text-sm font-medium text-gray-700 block mb-1">Şifre</label>
                                             <input type="password" wire:model.defer="newUser.password"
@@ -203,8 +218,6 @@
                                                 <span class="text-red-500 text-xs">{{ $message }}</span>
                                             @enderror
                                         </div>
-                                    </div>
-                                    <div class="flex flex-col gap-6">
                                         <div>
                                             <label class="text-sm font-medium text-gray-700 block mb-1">Birim</label>
                                             <select wire:model.defer="newUser.department_id"
@@ -292,6 +305,16 @@
                                             @enderror
                                         </div>
                                         <div>
+                                            <label class="text-sm font-medium text-gray-700 block mb-1">TC</label>
+                                            <input type="text" wire:model.defer="editUser.tc"
+                                                class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400">
+                                            <p class="text-xs text-gray-500 mt-1">11 haneli sayısal bir değer
+                                                olmalıdır.</p>
+                                            @error('editUser.tc')
+                                                <span class="text-red-500 text-xs">{{ $message }}</span>
+                                            @enderror
+                                        </div>
+                                        <div>
                                             <label class="text-sm font-medium text-gray-700 block mb-1">E-posta</label>
                                             <input type="email" wire:model.defer="editUser.email"
                                                 class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400">
@@ -299,6 +322,20 @@
                                                 <span class="text-red-500 text-xs">{{ $message }}</span>
                                             @enderror
                                         </div>
+                                        <div>
+                                            <!-- TC ile şifre sıfırlama butonu -->
+                                            <button type="button"
+                                                class="bg-red-500 text-white rounded px-4 py-2 mt-2 hover:bg-red-400 transition"
+                                                wire:click="resetPasswordWithTC">
+                                                Şifreyi TC'nin ilk 7 hanesi ile sıfırla
+                                            </button>
+                                            @if ($tcResetError)
+                                                <span
+                                                    class="block text-red-500 text-xs mt-2">{{ $tcResetError }}</span>
+                                            @endif
+                                        </div>
+                                    </div>
+                                    <div class="flex flex-col gap-6">
                                         <div>
                                             <label class="text-sm font-medium text-gray-700 block mb-1">Şifre
                                                 (değiştirmek için doldurun)</label>
@@ -308,8 +345,6 @@
                                                 <span class="text-red-500 text-xs">{{ $message }}</span>
                                             @enderror
                                         </div>
-                                    </div>
-                                    <div class="flex flex-col gap-6">
                                         <div>
                                             <label class="text-sm font-medium text-gray-700 block mb-1">Birim</label>
                                             <select wire:model.defer="editUser.department_id"

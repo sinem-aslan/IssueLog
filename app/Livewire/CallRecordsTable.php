@@ -351,7 +351,7 @@ class CallRecordsTable extends Component
               });
         });
 
-        // - İstatistiksel Sayımlar -
+        // --- İstatistiksel Sayımlar ---
 
         // Toplam kayıt sayısı
         $totalCount = (clone $query)->count();

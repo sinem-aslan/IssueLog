@@ -14,6 +14,8 @@
 
     <!-- Scripts -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+
+    @stack('styles') <!-- Push ile eklenen stiller için -->
 </head>
 
 <body class="font-sans text-gray-900 antialiased">
@@ -28,6 +30,8 @@
             {{ $slot }}
         </div>
     </div>
+
+    @stack('scripts') <!-- Push ile eklenen scriptler için -->
     @stack('body_end') <!-- Push ile eklenen içerikler için -->
 </body>
 
